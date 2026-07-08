@@ -1,12 +1,11 @@
 import {
-  Database,
+  Activity,
   Gauge,
   HardDriveDownload,
   Radio,
   ServerCog,
-  Upload,
 } from 'lucide-react'
-import { formatBytes, formatPercent, formatRatio, formatSpeed } from '../lib/format'
+import { formatPercent, formatSpeed } from '../lib/format'
 import type { CapabilityState, TorrentTask } from '../webtorrent/types'
 
 type TorrentStatusPanelProps = {
@@ -19,6 +18,11 @@ export function TorrentStatusPanel({ task, capabilities, sourceLabel }: TorrentS
   const progressWidth = `${Math.max(0, Math.min(task.progress * 100, 100))}%`
   const metrics = [
     {
+      label: '任务',
+      value: task.status,
+      icon: Activity,
+    },
+    {
       label: '进度',
       value: formatPercent(task.progress),
       icon: Gauge,
@@ -29,23 +33,13 @@ export function TorrentStatusPanel({ task, capabilities, sourceLabel }: TorrentS
       icon: HardDriveDownload,
     },
     {
-      label: '上传',
-      value: formatSpeed(task.uploadSpeed),
-      icon: Upload,
-    },
-    {
       label: 'Peers',
       value: String(task.numPeers),
       icon: Radio,
     },
     {
-      label: 'Ratio',
-      value: formatRatio(task.ratio),
-      icon: Database,
-    },
-    {
-      label: '已下载',
-      value: formatBytes(task.downloadedBytes),
+      label: 'Stream server',
+      value: capabilities.streamServerReady ? 'ready' : 'off',
       icon: ServerCog,
     },
   ]
@@ -81,21 +75,7 @@ export function TorrentStatusPanel({ task, capabilities, sourceLabel }: TorrentS
         })}
       </div>
 
-      <div className="capability-stack">
-        <CapabilityRow label="WebRTC" ok={capabilities.webRtcSupported} />
-        <CapabilityRow label="Service Worker" ok={capabilities.serviceWorkerSupported} />
-        <CapabilityRow label="Stream server" ok={capabilities.streamServerReady} />
-      </div>
       <p className="hint-copy">{capabilities.codecHint}</p>
     </section>
-  )
-}
-
-function CapabilityRow({ label, ok }: { label: string; ok: boolean }) {
-  return (
-    <div className={`capability-row ${ok ? 'ok' : 'off'}`}>
-      <span>{label}</span>
-      <strong>{ok ? 'ready' : 'off'}</strong>
-    </div>
   )
 }

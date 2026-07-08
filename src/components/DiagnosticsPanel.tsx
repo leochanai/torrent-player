@@ -1,4 +1,5 @@
-import { Bug, CircleAlert, Network, ServerCog } from 'lucide-react'
+import { Bug, CircleAlert, Database, HardDriveDownload, Network, ServerCog, Upload } from 'lucide-react'
+import { formatBytes, formatRatio, formatSpeed } from '../lib/format'
 import type { CapabilityState, PlaybackState, TorrentTask } from '../webtorrent/types'
 
 type DiagnosticsPanelProps = {
@@ -61,6 +62,27 @@ export function DiagnosticsPanel({
         <div>
           <dt>当前文件</dt>
           <dd>{playback.fileName ?? 'none'}</dd>
+        </div>
+        <div>
+          <dt>
+            <HardDriveDownload size={14} />
+            已下载
+          </dt>
+          <dd>{formatBytes(task.downloadedBytes)}</dd>
+        </div>
+        <div>
+          <dt>
+            <Upload size={14} />
+            上传速度
+          </dt>
+          <dd>{formatSpeed(task.uploadSpeed)}</dd>
+        </div>
+        <div>
+          <dt>
+            <Database size={14} />
+            Ratio
+          </dt>
+          <dd>{formatRatio(task.ratio)}</dd>
         </div>
         <div>
           <dt>技术细节</dt>

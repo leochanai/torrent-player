@@ -5,7 +5,7 @@
 - V1 已实现为纯浏览器 WebTorrent 磁力播放器。
 - UI 已按用户确认的“黑匣子信号甲板”概念图重设计：硬边面板、顶部能力状态甲板、左侧来源/文件轨、中央播放监视器、任务信息/操作面板和右侧状态/事件/诊断纵列。
 - 本地 dev server 当前可访问：`http://127.0.0.1:5174/`。
-- 当前目录不是 Git 仓库，未 commit、未 push。
+- 当前目录是 Git 仓库；本轮改动尚未 commit、未 push。
 
 ## 已完成
 
@@ -19,6 +19,8 @@
 - [x] 重设计 UI：引入本地打包的 Chakra Petch / IBM Plex Sans / JetBrains Mono latin 字体；替换通用暗色卡片为工业信号甲板视觉系统。
 - [x] 修复移动端 no-peers 错误横幅被按钮挤压导致中文竖排的问题。
 - [x] 修复长 WebTorrent warning / tracker URL 事件行撑宽右侧事件面板导致桌面横向溢出的问题。
+- [x] 修复桌面端滚动到底后中间出现大块空黑区域的问题：桌面改为固定甲板，三列在各自舱内滚动；移动端保留整页滚动。
+- [x] 精简右侧主状态字段：主状态仅保留来源、任务、进度、下载、Peers 和 Stream server；上传、Ratio、已下载和底层能力细节移动到诊断。
 - [x] 更新 `docs/ARCHITECTURE.md`、`docs/DESIGN.md`、`docs/PRODUCT.md` 与本交接记录。
 
 ## 已验证
@@ -28,11 +30,13 @@
 - [x] `npm run build` 通过。
 - [x] Browser/IAB 桌面 `1280x720`：三栏布局存在，`scrollWidth=clientWidth=1280`，无框架错误遮罩，无 console error/warn。
 - [x] Browser/IAB 桌面 `1440x900`：概念图主构图完整可见，任务信息、任务操作和右侧事件区域进入同一屏。
+- [x] Browser/IAB 桌面 `1440x900`：右侧状态列滚到底后，`documentScrollHeight=documentClientHeight=900`，页面本身不滚动，中间播放/任务区域保持可见，`scrollWidth=clientWidth=1440`。
+- [x] Browser/IAB 桌面 `1440x900`：主状态不再显示上传、Ratio、已下载；展开诊断后可见上传速度、Ratio、已下载；无 console error/warn，`scrollWidth=clientWidth=1440`。
 - [x] Browser/IAB 移动 `390x844`：单列布局存在，`scrollWidth=clientWidth=390`，顶部状态甲板、来源输入和播放器区域无横向溢出。
 - [x] 非法 magnet：输入 `not a magnet` 后显示“这不是 magnet URI。”，不创建任务。
 - [x] 合法 Sintel magnet 烟测：Stream server ready；14 秒内 peers 为 0，metadata 未就绪，进入 `no-peers` 可恢复诊断路径；停止任务后资源释放。
 - [x] 合法 Big Buck Bunny 完整 magnet 烟测：1 秒内 metadata ready，3 个文件出现，自动选中 `Big Buck Bunny.mp4`，视频元素挂载，任务进入 `buffering`，Peers=1，下载约 `452 KB/s`；停止任务后资源释放。
-- [x] 截图已更新：`artifacts/screenshots/desktop-1280.png`、`artifacts/screenshots/desktop-1440.png`、`artifacts/screenshots/mobile-390.png`、`artifacts/screenshots/live-magnet-390.png`、`artifacts/screenshots/live-big-buck-bunny-1440.png`。
+- [x] 截图已更新：`artifacts/screenshots/desktop-1280.png`、`artifacts/screenshots/desktop-1440.png`、`artifacts/screenshots/desktop-scroll-bottom-1440.png`、`artifacts/screenshots/mobile-390.png`、`artifacts/screenshots/live-magnet-390.png`、`artifacts/screenshots/live-big-buck-bunny-1440.png`。
 
 ## 未验证
 

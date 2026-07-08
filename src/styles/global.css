@@ -12,7 +12,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
-  overflow-x: hidden;
+  overflow: hidden;
   color: var(--text);
   background-color: var(--bg);
 }
@@ -76,9 +76,11 @@ input:disabled {
 
 .app-shell {
   display: flex;
-  min-height: 100vh;
+  height: 100dvh;
+  min-height: 640px;
   flex-direction: column;
   gap: var(--space-4);
+  overflow: hidden;
   padding: var(--space-4);
 }
 
@@ -337,23 +339,51 @@ input:disabled {
 .workspace {
   display: grid;
   min-height: 0;
+  overflow: hidden;
   flex: 1;
   grid-template-columns: minmax(290px, 340px) minmax(560px, 1fr) minmax(290px, 340px);
   gap: var(--space-4);
-  align-items: start;
+  align-items: stretch;
 }
 
 .workspace-panel {
   display: flex;
+  height: 100%;
   min-width: 0;
+  min-height: 0;
   flex-direction: column;
   gap: var(--space-4);
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: rgb(214 255 47 / 0.3) rgb(17 20 15 / 0.55);
+  scrollbar-width: thin;
+}
+
+.workspace-panel::-webkit-scrollbar,
+.player-column::-webkit-scrollbar,
+.activity-list::-webkit-scrollbar,
+.file-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.workspace-panel::-webkit-scrollbar-track,
+.player-column::-webkit-scrollbar-track,
+.activity-list::-webkit-scrollbar-track,
+.file-list::-webkit-scrollbar-track {
+  background-color: rgb(17 20 15 / 0.55);
+}
+
+.workspace-panel::-webkit-scrollbar-thumb,
+.player-column::-webkit-scrollbar-thumb,
+.activity-list::-webkit-scrollbar-thumb,
+.file-list::-webkit-scrollbar-thumb {
+  border: 2px solid rgb(17 20 15 / 0.55);
+  background-color: rgb(214 255 47 / 0.34);
 }
 
 .source-column,
 .status-column {
-  position: sticky;
-  top: var(--space-4);
+  position: static;
 }
 
 .source-input,
@@ -673,8 +703,14 @@ textarea::placeholder {
 
 .player-column {
   display: flex;
+  height: 100%;
+  min-height: 0;
   flex-direction: column;
   gap: var(--space-4);
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: rgb(214 255 47 / 0.3) rgb(17 20 15 / 0.55);
+  scrollbar-width: thin;
 }
 
 .player-heading {
@@ -1358,6 +1394,17 @@ textarea::placeholder {
 @media (max-width: 1180px) {
   .workspace {
     grid-template-columns: minmax(280px, 330px) minmax(0, 1fr);
+    align-items: start;
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-color: rgb(214 255 47 / 0.3) rgb(17 20 15 / 0.55);
+    scrollbar-width: thin;
+  }
+
+  .workspace-panel,
+  .player-column {
+    height: auto;
+    overflow: visible;
   }
 
   .status-column {
@@ -1369,7 +1416,15 @@ textarea::placeholder {
 }
 
 @media (max-width: 880px) {
+  body {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
   .app-shell {
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
     padding: var(--space-3);
   }
 
@@ -1390,6 +1445,7 @@ textarea::placeholder {
 
   .workspace {
     grid-template-columns: minmax(0, 1fr);
+    overflow: visible;
   }
 
   .source-column,

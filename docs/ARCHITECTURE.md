@@ -124,6 +124,8 @@ npm audit --omit=dev --json
 
 - UI 规则以 `docs/DESIGN.md` 为准。
 - 当前视觉方向是“黑匣子信号甲板”：桌面端三栏工作台仍为来源/文件、播放器、状态/事件/诊断，但呈现为硬边仪表甲板、媒体监视器和信号读数轨。
+- 桌面端使用固定甲板布局：页面锁定在视口内，来源列、播放器列和状态列各自处理内部滚动，避免事件流把整页拖成长页；移动端恢复自然整页滚动。
+- 主状态面板只显示播放决策字段；上传、ratio、已下载、WebRTC/Service Worker 能力细节和 infoHash 放入诊断面板。
 - 移动端单列工作台，长 magnet、长文件名和长诊断详情不得造成横向滚动。
 - 播放器、输入、文件列表、状态面板是功能区域；不要改成资源站首页、海报墙或营销落地页。
 - 图标使用 lucide-react；按钮仍需文本或可访问名称。
@@ -149,8 +151,11 @@ npm run build
 当前截图证据：
 
 - `artifacts/screenshots/desktop-1280.png`
+- `artifacts/screenshots/desktop-1440.png`
+- `artifacts/screenshots/desktop-scroll-bottom-1440.png`
 - `artifacts/screenshots/mobile-390.png`
 - `artifacts/screenshots/live-magnet-390.png`
+- `artifacts/screenshots/live-big-buck-bunny-1440.png`
 
 ## 安全与依赖风险
 

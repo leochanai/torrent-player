@@ -7,7 +7,7 @@ describe('App', () => {
     render(<App />)
 
     expect(screen.getByRole('heading', { name: 'Torrent Player' })).toBeInTheDocument()
-    expect(screen.getByText('等待可播放文件')).toBeInTheDocument()
+    expect(screen.getAllByText('等待可播放文件').length).toBeGreaterThan(0)
     expect(screen.getByText(/仅用于播放用户自有或合法授权内容/)).toBeInTheDocument()
   })
 

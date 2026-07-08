@@ -27,7 +27,20 @@ export function PlayerShell({
 
   return (
     <section className="player-shell">
+      <div className="panel-heading player-heading">
+        <MonitorPlay size={17} />
+        <h2>播放监视器</h2>
+        <span className="panel-index">03</span>
+      </div>
+
       <div className="player-frame">
+        <span className="scope-corner top-left" aria-hidden="true" />
+        <span className="scope-corner top-right" aria-hidden="true" />
+        <span className="scope-corner bottom-left" aria-hidden="true" />
+        <span className="scope-corner bottom-right" aria-hidden="true" />
+        <span className="signal-axis" aria-hidden="true" />
+        <span className="monitor-reticle" aria-hidden="true" />
+
         {playback.filePath ? (
           isAudio ? (
             <div className="audio-stage">
@@ -73,6 +86,12 @@ export function PlayerShell({
             <span>正在拉取播放片段</span>
           </div>
         ) : null}
+      </div>
+
+      <div className="panel-heading meta-heading">
+        <MonitorPlay size={17} />
+        <h2>任务信息</h2>
+        <span className="panel-index">04</span>
       </div>
 
       <div className="player-meta">

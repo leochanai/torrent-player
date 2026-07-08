@@ -1,4 +1,4 @@
-import { FileAudio2, FileQuestion, FileVideo2, PlayCircle } from 'lucide-react'
+import { FileAudio2, FileQuestion, FileVideo2, Hourglass, PlayCircle } from 'lucide-react'
 import { formatBytes, formatPercent } from '../lib/format'
 import { canRenderInMediaElement } from '../lib/media'
 import type { TorrentFileItem } from '../webtorrent/types'
@@ -14,11 +14,22 @@ export function TorrentFileList({ files, onSelectFile }: TorrentFileListProps) {
       <div className="panel-heading">
         <FileVideo2 size={17} />
         <h2>文件</h2>
+        <span className="panel-index">02</span>
         <span className="heading-count">{files.length}</span>
       </div>
 
       {files.length === 0 ? (
-        <p className="empty-copy">metadata 就绪后会显示 torrent 文件列表。</p>
+        <div className="file-empty-rail">
+          <div className="file-table-head" aria-hidden="true">
+            <span>Name</span>
+            <span>Size</span>
+          </div>
+          <div className="file-waiting">
+            <Hourglass size={16} />
+            <strong>等待可播放文件</strong>
+            <span>metadata 就绪后会显示 torrent 文件列表。</span>
+          </div>
+        </div>
       ) : (
         <ul className="file-list">
           {files.map((file) => {

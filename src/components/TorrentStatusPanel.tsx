@@ -16,6 +16,7 @@ type TorrentStatusPanelProps = {
 }
 
 export function TorrentStatusPanel({ task, capabilities, sourceLabel }: TorrentStatusPanelProps) {
+  const progressWidth = `${Math.max(0, Math.min(task.progress * 100, 100))}%`
   const metrics = [
     {
       label: '进度',
@@ -54,6 +55,7 @@ export function TorrentStatusPanel({ task, capabilities, sourceLabel }: TorrentS
       <div className="panel-heading">
         <Gauge size={17} />
         <h2>状态</h2>
+        <span className="panel-index">06</span>
       </div>
 
       <div className="source-summary">
@@ -69,6 +71,11 @@ export function TorrentStatusPanel({ task, capabilities, sourceLabel }: TorrentS
               <Icon size={16} />
               <span>{metric.label}</span>
               <strong>{metric.value}</strong>
+              {metric.label === '进度' ? (
+                <span className="metric-track" aria-hidden="true">
+                  <span style={{ width: progressWidth }} />
+                </span>
+              ) : null}
             </div>
           )
         })}

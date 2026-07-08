@@ -21,6 +21,7 @@
 - HTML `<video>` / `<audio>` 原生媒体播放。
 - Service Worker，用于 WebTorrent browser stream server。
 - 全局 CSS + `tokens.css`，不引入重型 UI 框架。
+- `@fontsource/chakra-petch`、`@fontsource/ibm-plex-sans`、`@fontsource/jetbrains-mono`，用于本地打包的显示字体、正文字体和数据字体；当前只导入 latin 子集，中文走系统中文字体 fallback。
 - Vitest + React Testing Library，覆盖 parser、media、task reducer 和基础 UI。
 - lucide-react，用于按钮和状态图标。
 
@@ -122,10 +123,11 @@ npm audit --omit=dev --json
 ## 界面实现约束
 
 - UI 规则以 `docs/DESIGN.md` 为准。
-- 桌面端三栏工作台：来源/文件、播放器、状态/事件/诊断。
+- 当前视觉方向是“黑匣子信号甲板”：桌面端三栏工作台仍为来源/文件、播放器、状态/事件/诊断，但呈现为硬边仪表甲板、媒体监视器和信号读数轨。
 - 移动端单列工作台，长 magnet、长文件名和长诊断详情不得造成横向滚动。
 - 播放器、输入、文件列表、状态面板是功能区域；不要改成资源站首页、海报墙或营销落地页。
 - 图标使用 lucide-react；按钮仍需文本或可访问名称。
+- 背景深度使用噪点、扫描线、硬边几何和层叠边框；不使用通用蓝紫科技渐变或装饰性光效。
 
 ## 验证方式
 

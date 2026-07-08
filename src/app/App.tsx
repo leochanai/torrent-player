@@ -4,6 +4,7 @@ import {
   CheckCircle2,
   FileVideo2,
   RadioTower,
+  Settings,
   ShieldCheck,
   Signal,
   StopCircle,
@@ -19,10 +20,8 @@ import { useTorrentPlayer } from './useTorrentPlayer'
 export function App() {
   const player = useTorrentPlayer()
 
-  const supportTone =
-    player.capabilities.webRtcSupported && player.capabilities.serviceWorkerSupported
-      ? 'ok'
-      : 'error'
+  const webRtcTone = player.capabilities.webRtcSupported ? 'ok' : 'error'
+  const serviceWorkerTone = player.capabilities.serviceWorkerSupported ? 'ok' : 'error'
 
   return (
     <main className="app-shell">
@@ -32,24 +31,36 @@ export function App() {
             <RadioTower size={20} />
           </div>
           <div>
-            <h1>Torrent Player</h1>
-            <p>WebTorrent browser stream console</p>
+            <div className="brand-title-row">
+              <h1>Torrent Player</h1>
+              <span className="brand-badge">合法来源</span>
+            </div>
+            <p>Local WebTorrent signal deck</p>
           </div>
         </div>
 
         <div className="topbar-status" aria-label="运行能力状态">
-          <span className={`status-pill ${supportTone}`}>
-            {supportTone === 'ok' ? <CheckCircle2 size={15} /> : <WifiOff size={15} />}
-            WebRTC / SW
+          <span className={`status-pill ${webRtcTone}`}>
+            {webRtcTone === 'ok' ? <CheckCircle2 size={15} /> : <WifiOff size={15} />}
+            <span>WebRTC</span>
+            <i aria-hidden="true" />
+          </span>
+          <span className={`status-pill ${serviceWorkerTone}`}>
+            {serviceWorkerTone === 'ok' ? <CheckCircle2 size={15} /> : <WifiOff size={15} />}
+            <span>Service Worker</span>
+            <i aria-hidden="true" />
           </span>
           <span className={`status-pill ${player.capabilities.streamServerReady ? 'ok' : 'idle'}`}>
             <Signal size={15} />
-            Stream server
+            <span>Stream server</span>
+            <i aria-hidden="true" />
           </span>
-          <span className="status-pill lawful">
-            <ShieldCheck size={15} />
-            合法来源
-          </span>
+        </div>
+
+        <div className="topbar-local" aria-label="本地优先状态">
+          <strong>LOCAL ONLY</strong>
+          <span>No cloud queue</span>
+          <Settings size={18} aria-hidden="true" />
         </div>
       </header>
 
@@ -80,19 +91,26 @@ export function App() {
             mediaHandlers={player.mediaHandlers}
           />
 
-          <div className="quick-actions" aria-label="任务操作">
-            <button className="button danger" type="button" onClick={player.stop}>
-              <StopCircle size={17} />
-              停止任务
-            </button>
-            <button
-              className="button secondary"
-              type="button"
-              onClick={() => player.setDiagnosticOpen(!player.diagnosticOpen)}
-            >
+          <div className="task-actions" aria-label="任务操作">
+            <div className="panel-heading">
               <Activity size={17} />
-              {player.diagnosticOpen ? '收起诊断' : '展开诊断'}
-            </button>
+              <h2>任务操作</h2>
+              <span className="panel-index">05</span>
+            </div>
+            <div className="quick-actions">
+              <button className="button danger" type="button" onClick={player.stop}>
+                <StopCircle size={17} />
+                停止任务
+              </button>
+              <button
+                className="button secondary"
+                type="button"
+                onClick={() => player.setDiagnosticOpen(!player.diagnosticOpen)}
+              >
+                <Activity size={17} />
+                {player.diagnosticOpen ? '收起诊断' : '展开诊断'}
+              </button>
+            </div>
           </div>
 
           {player.task.error ? (
@@ -120,6 +138,7 @@ export function App() {
             <div className="panel-heading">
               <FileVideo2 size={17} />
               <h2>事件</h2>
+              <span className="panel-index">08</span>
             </div>
             {player.activity.length === 0 ? (
               <p className="empty-copy">添加 magnet 或 .torrent 后会显示关键事件。</p>

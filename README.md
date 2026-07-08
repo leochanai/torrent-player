@@ -36,7 +36,7 @@ npm run test
 npm run build
 ```
 
-Latest local verification passed lint, tests, build, desktop/mobile browser layout checks, and a live Sintel WebTorrent magnet smoke test.
+Latest local verification passed lint, tests, build, desktop/mobile browser layout checks, invalid magnet validation, and a live Big Buck Bunny WebTorrent magnet smoke test. The latest Big Buck Bunny run reached metadata ready, selected `Big Buck Bunny.mp4`, mounted the video element, and entered buffering with one peer.
 
 ## Known Risk
 

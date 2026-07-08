@@ -19,6 +19,7 @@ export function DiagnosticsPanel({
       <div className="panel-heading">
         <Bug size={17} />
         <h2>诊断</h2>
+        <span className="panel-index">09</span>
       </div>
 
       {error ? (

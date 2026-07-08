@@ -53,23 +53,26 @@ export function SourceInput({
   }
 
   return (
-    <section className="source-input">
+    <section className="source-input deck-section">
       <div className="panel-heading">
         <Link2 size={17} />
         <h2>来源</h2>
+        <span className="panel-index">01</span>
       </div>
 
       <label className="field-label" htmlFor="magnet-input">
         Magnet URI
       </label>
-      <textarea
-        id="magnet-input"
-        value={value}
-        placeholder="magnet:?xt=urn:btih:..."
-        disabled={disabled}
-        spellCheck={false}
-        onChange={(event) => setValue(event.target.value)}
-      />
+      <div className="source-console">
+        <textarea
+          id="magnet-input"
+          value={value}
+          placeholder="magnet:?xt=urn:btih:..."
+          disabled={disabled}
+          spellCheck={false}
+          onChange={(event) => setValue(event.target.value)}
+        />
+      </div>
       {localError ? <p className="field-error">{localError}</p> : null}
 
       <div className="button-row">
@@ -85,6 +88,7 @@ export function SourceInput({
 
       <label
         className={`dropzone ${dragActive ? 'active' : ''}`}
+        data-state={dragActive ? 'active' : 'idle'}
         onDragOver={(event) => {
           event.preventDefault()
           setDragActive(true)

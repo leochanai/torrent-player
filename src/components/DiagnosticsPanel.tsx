@@ -16,11 +16,11 @@ export function DiagnosticsPanel({
   const error = playback.error ?? task.error
 
   return (
-    <section className="diagnostics-panel">
+    <section className="diagnostics-panel" id="diagnostics-panel">
       <div className="panel-heading">
         <Bug size={17} />
         <h2>诊断</h2>
-        <span className="panel-index">09</span>
+        <span className="panel-index">08</span>
       </div>
 
       {error ? (

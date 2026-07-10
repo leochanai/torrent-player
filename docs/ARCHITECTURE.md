@@ -7,7 +7,7 @@
 - WebTorrent 浏览器流式播放依赖 Service Worker stream server 与 `file.streamTo(mediaElement)`。
 - `node_modules/webtorrent/dist/sw.min.js` 复制到 `public/sw.min.js`；`webtorrent.min.js` 与 loader 复制到 `public/vendor/`。
 - Vite dev 不能从源码直接 `import` public 资源；WebTorrent 浏览器 bundle 通过 `public/vendor/webtorrent-loader.js` 原生 module script 挂载到 `window.WebTorrent`。
-- 当前目录不是 Git 仓库；不要假设有 `git diff`、commit 或 branch 工作流。
+- 当前目录是 Git 仓库；修改时使用 `git diff` 核对范围，但未经用户明确要求不 commit、push 或发布。
 
 外部事实来源：
 
@@ -125,7 +125,10 @@ npm audit --omit=dev --json
 - UI 规则以 `docs/DESIGN.md` 为准。
 - 当前视觉方向是“黑匣子信号甲板”：桌面端三栏工作台仍为来源/文件、播放器、状态/事件/诊断，但呈现为硬边仪表甲板、媒体监视器和信号读数轨。
 - 桌面端使用固定甲板布局：页面锁定在视口内，来源列、播放器列和状态列各自处理内部滚动，避免事件流把整页拖成长页；移动端恢复自然整页滚动。
-- 主状态面板只显示播放决策字段；上传、ratio、已下载、WebRTC/Service Worker 能力细节和 infoHash 放入诊断面板。
+- 顶部能力甲板负责 WebRTC、Service Worker 和 Stream server 全局状态；移动端折叠为一条 `N/3 已就绪` 摘要。
+- 主状态面板只显示来源、任务、进度、下载速度和连接节点；上传、ratio、已下载、底层能力细节和 infoHash 放入诊断面板。
+- 用户可见的任务状态使用中文标签，原始英文状态值保留为内部状态契约或诊断信息。
+- 空闲、已停止和环境不支持状态不显示“停止任务”；危险操作只在存在可停止任务时出现。
 - 移动端单列工作台，长 magnet、长文件名和长诊断详情不得造成横向滚动。
 - 播放器、输入、文件列表、状态面板是功能区域；不要改成资源站首页、海报墙或营销落地页。
 - 图标使用 lucide-react；按钮仍需文本或可访问名称。
@@ -143,8 +146,9 @@ npm run build
 
 涉及 WebTorrent、Service Worker、播放器状态机、响应式布局或主流程时，升级到浏览器 L3 烟囱测试：
 
-- 桌面 `1280x720` 或 `1440x900`：页面可见、三栏布局、无横向溢出。
-- 移动 `390x844`：单列布局、长输入/错误/文件名无横向溢出。
+- 桌面 `1280x800` 或 `1440x900`：页面可见、三栏布局、无横向溢出。
+- 临界桌面 `1190x800`：切换为来源/播放器两栏，状态区在下一行完整排列，不与第一行重叠。
+- 移动 `390x844` 与 `360x740`：单列布局、紧凑能力摘要、44px 触控目标，长输入/错误/文件名无横向溢出。
 - 非法 magnet：就地显示输入错误，不创建 client。
 - 合法 WebTorrent 样例：Service Worker ready、metadata ready、文件列表出现、可播放文件挂到 media element。
 

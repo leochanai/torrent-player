@@ -1,5 +1,5 @@
 import { AudioLines, Loader2, MonitorPlay } from 'lucide-react'
-import { formatDuration } from '../lib/format'
+import { formatDuration, formatTaskStatus } from '../lib/format'
 import type { PlaybackState, TorrentTask } from '../webtorrent/types'
 
 type PlayerShellProps = {
@@ -24,6 +24,7 @@ export function PlayerShell({
   mediaHandlers,
 }: PlayerShellProps) {
   const isAudio = playback.mediaKind === 'audio'
+  const hasMedia = Boolean(playback.filePath)
 
   return (
     <section className="player-shell">
@@ -33,13 +34,17 @@ export function PlayerShell({
         <span className="panel-index">03</span>
       </div>
 
-      <div className="player-frame">
-        <span className="scope-corner top-left" aria-hidden="true" />
-        <span className="scope-corner top-right" aria-hidden="true" />
-        <span className="scope-corner bottom-left" aria-hidden="true" />
-        <span className="scope-corner bottom-right" aria-hidden="true" />
-        <span className="signal-axis" aria-hidden="true" />
-        <span className="monitor-reticle" aria-hidden="true" />
+      <div className={`player-frame ${hasMedia ? 'has-media' : 'is-empty'}`}>
+        {!hasMedia ? (
+          <>
+            <span className="scope-corner top-left" aria-hidden="true" />
+            <span className="scope-corner top-right" aria-hidden="true" />
+            <span className="scope-corner bottom-left" aria-hidden="true" />
+            <span className="scope-corner bottom-right" aria-hidden="true" />
+            <span className="signal-axis" aria-hidden="true" />
+            <span className="monitor-reticle" aria-hidden="true" />
+          </>
+        ) : null}
 
         {playback.filePath ? (
           isAudio ? (
@@ -49,6 +54,7 @@ export function PlayerShell({
               <audio
                 ref={bindMediaElement}
                 controls
+                aria-label={playback.fileName ? `${playback.fileName} 音频播放器` : '音频播放器'}
                 onLoadStart={mediaHandlers.onLoadStart}
                 onLoadedMetadata={mediaHandlers.onLoadedMetadata}
                 onWaiting={mediaHandlers.onWaiting}
@@ -63,6 +69,7 @@ export function PlayerShell({
               ref={bindMediaElement}
               controls
               playsInline
+              aria-label={playback.fileName ? `${playback.fileName} 视频播放器` : '视频播放器'}
               onLoadStart={mediaHandlers.onLoadStart}
               onLoadedMetadata={mediaHandlers.onLoadedMetadata}
               onWaiting={mediaHandlers.onWaiting}
@@ -107,7 +114,9 @@ export function PlayerShell({
         </div>
         <div>
           <span>任务状态</span>
-          <strong>{task.status}</strong>
+          <strong role="status" aria-live="polite" aria-atomic="true">
+            {formatTaskStatus(task.status)}
+          </strong>
         </div>
       </div>
     </section>

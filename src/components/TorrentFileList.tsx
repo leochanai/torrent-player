@@ -21,8 +21,8 @@ export function TorrentFileList({ files, onSelectFile }: TorrentFileListProps) {
       {files.length === 0 ? (
         <div className="file-empty-rail">
           <div className="file-table-head" aria-hidden="true">
-            <span>Name</span>
-            <span>Size</span>
+            <span>文件名</span>
+            <span>大小</span>
           </div>
           <div className="file-waiting">
             <Hourglass size={16} />
@@ -47,7 +47,7 @@ export function TorrentFileList({ files, onSelectFile }: TorrentFileListProps) {
                   <div>
                     <strong title={file.path}>{file.name}</strong>
                     <span>
-                      {formatBytes(file.size)} · {file.mimeType || 'unknown'} · {formatPercent(file.progress)}
+                      {formatBytes(file.size)} · {file.mimeType || '类型未知'} · {formatPercent(file.progress)}
                     </span>
                     {file.codecHint ? <small>{file.codecHint}</small> : null}
                   </div>
@@ -58,6 +58,7 @@ export function TorrentFileList({ files, onSelectFile }: TorrentFileListProps) {
                   disabled={!playable}
                   onClick={() => onSelectFile(file.path)}
                   aria-label={`选择 ${file.name}`}
+                  aria-pressed={file.selected}
                   title={playable ? '选择播放' : '浏览器可能无法直接播放'}
                 >
                   <PlayCircle size={18} />

@@ -3,23 +3,22 @@ import {
   Gauge,
   HardDriveDownload,
   Radio,
-  ServerCog,
 } from 'lucide-react'
-import { formatPercent, formatSpeed } from '../lib/format'
-import type { CapabilityState, TorrentTask } from '../webtorrent/types'
+import { formatPercent, formatSpeed, formatTaskStatus } from '../lib/format'
+import type { TorrentTask } from '../webtorrent/types'
 
 type TorrentStatusPanelProps = {
   task: TorrentTask
-  capabilities: CapabilityState
   sourceLabel?: string
 }
 
-export function TorrentStatusPanel({ task, capabilities, sourceLabel }: TorrentStatusPanelProps) {
+export function TorrentStatusPanel({ task, sourceLabel }: TorrentStatusPanelProps) {
   const progressWidth = `${Math.max(0, Math.min(task.progress * 100, 100))}%`
+  const progressValue = Math.round(Math.max(0, Math.min(task.progress * 100, 100)))
   const metrics = [
     {
       label: '任务',
-      value: task.status,
+      value: formatTaskStatus(task.status),
       icon: Activity,
     },
     {
@@ -28,19 +27,14 @@ export function TorrentStatusPanel({ task, capabilities, sourceLabel }: TorrentS
       icon: Gauge,
     },
     {
-      label: '下载',
+      label: '下载速度',
       value: formatSpeed(task.downloadSpeed),
       icon: HardDriveDownload,
     },
     {
-      label: 'Peers',
+      label: '连接节点',
       value: String(task.numPeers),
       icon: Radio,
-    },
-    {
-      label: 'Stream server',
-      value: capabilities.streamServerReady ? 'ready' : 'off',
-      icon: ServerCog,
     },
   ]
 
@@ -66,16 +60,21 @@ export function TorrentStatusPanel({ task, capabilities, sourceLabel }: TorrentS
               <span>{metric.label}</span>
               <strong>{metric.value}</strong>
               {metric.label === '进度' ? (
-                <span className="metric-track" aria-hidden="true">
-                  <span style={{ width: progressWidth }} />
+                <span
+                  className="metric-track"
+                  role="progressbar"
+                  aria-label={`下载进度 ${metric.value}`}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={progressValue}
+                >
+                  <span style={{ width: progressWidth }} aria-hidden="true" />
                 </span>
               ) : null}
             </div>
           )
         })}
       </div>
-
-      <p className="hint-copy">{capabilities.codecHint}</p>
     </section>
   )
 }

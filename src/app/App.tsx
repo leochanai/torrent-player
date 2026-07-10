@@ -4,7 +4,6 @@ import {
   CheckCircle2,
   FileVideo2,
   RadioTower,
-  Settings,
   ShieldCheck,
   Signal,
   StopCircle,
@@ -22,6 +21,17 @@ export function App() {
 
   const webRtcTone = player.capabilities.webRtcSupported ? 'ok' : 'error'
   const serviceWorkerTone = player.capabilities.serviceWorkerSupported ? 'ok' : 'error'
+  const readyCapabilityCount = [
+    player.capabilities.webRtcSupported,
+    player.capabilities.serviceWorkerSupported,
+    player.capabilities.streamServerReady,
+  ].filter(Boolean).length
+  const hasActiveTask = !['idle', 'stopped', 'unsupported'].includes(player.task.status)
+  const capabilityLabel = [
+    `WebRTC ${player.capabilities.webRtcSupported ? '可用' : '不可用'}`,
+    `Service Worker ${player.capabilities.serviceWorkerSupported ? '可用' : '不可用'}`,
+    `流媒体服务 ${player.capabilities.streamServerReady ? '就绪' : '未就绪'}`,
+  ].join('，')
 
   return (
     <main className="app-shell">
@@ -39,35 +49,50 @@ export function App() {
           </div>
         </div>
 
-        <div className="topbar-status" aria-label="运行能力状态">
-          <span className={`status-pill ${webRtcTone}`}>
+        <div className="topbar-status" role="list" aria-label="运行能力状态">
+          <span className={`status-pill ${webRtcTone}`} role="listitem">
             {webRtcTone === 'ok' ? <CheckCircle2 size={15} /> : <WifiOff size={15} />}
             <span>WebRTC</span>
             <i aria-hidden="true" />
           </span>
-          <span className={`status-pill ${serviceWorkerTone}`}>
+          <span className={`status-pill ${serviceWorkerTone}`} role="listitem">
             {serviceWorkerTone === 'ok' ? <CheckCircle2 size={15} /> : <WifiOff size={15} />}
             <span>Service Worker</span>
             <i aria-hidden="true" />
           </span>
-          <span className={`status-pill ${player.capabilities.streamServerReady ? 'ok' : 'idle'}`}>
+          <span
+            className={`status-pill ${player.capabilities.streamServerReady ? 'ok' : 'idle'}`}
+            role="listitem"
+          >
             <Signal size={15} />
             <span>Stream server</span>
             <i aria-hidden="true" />
           </span>
         </div>
 
+        <div
+          className={`topbar-compact-status ${readyCapabilityCount === 3 ? 'ok' : 'pending'}`}
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          aria-label={capabilityLabel}
+        >
+          <Signal size={16} aria-hidden="true" />
+          <span>运行环境</span>
+          <strong>{readyCapabilityCount}/3 已就绪</strong>
+        </div>
+
         <div className="topbar-local" aria-label="本地优先状态">
-          <strong>LOCAL ONLY</strong>
-          <span>No cloud queue</span>
-          <Settings size={18} aria-hidden="true" />
+          <strong>本地运行</strong>
+          <span>任务与来源不上传</span>
         </div>
       </header>
 
       <section className="notice-strip" aria-label="使用边界">
         <ShieldCheck size={16} />
         <span>
-          仅用于播放用户自有或合法授权内容。浏览器版 WebTorrent 主要连接 WebRTC peers 和 Web Seed，不承诺普通 TCP/UDP peers。
+          <strong>仅播放自有或合法授权内容。</strong> 浏览器版连接 WebRTC peers 与 Web Seed，
+          不支持普通 TCP/UDP peers。
         </span>
       </section>
 
@@ -98,14 +123,18 @@ export function App() {
               <span className="panel-index">05</span>
             </div>
             <div className="quick-actions">
-              <button className="button danger" type="button" onClick={player.stop}>
-                <StopCircle size={17} />
-                停止任务
-              </button>
+              {hasActiveTask ? (
+                <button className="button danger" type="button" onClick={player.stop}>
+                  <StopCircle size={17} />
+                  停止任务
+                </button>
+              ) : null}
               <button
                 className="button secondary"
                 type="button"
                 onClick={() => player.setDiagnosticOpen(!player.diagnosticOpen)}
+                aria-expanded={player.diagnosticOpen}
+                aria-controls="diagnostics-panel"
               >
                 <Activity size={17} />
                 {player.diagnosticOpen ? '收起诊断' : '展开诊断'}
@@ -121,7 +150,7 @@ export function App() {
                 <span>{player.task.error.recoveryAction}</span>
               </div>
               <button className="button ghost compact" type="button" onClick={player.clearError}>
-                清除
+                清除错误
               </button>
             </div>
           ) : null}
@@ -130,7 +159,6 @@ export function App() {
         <aside className="workspace-panel status-column" aria-label="任务状态和诊断">
           <TorrentStatusPanel
             task={player.task}
-            capabilities={player.capabilities}
             sourceLabel={player.sourceLabel}
           />
 
@@ -138,12 +166,12 @@ export function App() {
             <div className="panel-heading">
               <FileVideo2 size={17} />
               <h2>事件</h2>
-              <span className="panel-index">08</span>
+              <span className="panel-index">07</span>
             </div>
             {player.activity.length === 0 ? (
               <p className="empty-copy">添加 magnet 或 .torrent 后会显示关键事件。</p>
             ) : (
-              <ol className="activity-list">
+              <ol className="activity-list" aria-live="polite" aria-relevant="additions">
                 {player.activity.map((event) => (
                   <li className={event.tone} key={event.id}>
                     <span>{event.label}</span>

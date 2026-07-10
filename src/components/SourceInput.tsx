@@ -28,6 +28,7 @@ export function SourceInput({
   const [value, setValue] = useState('')
   const [dragActive, setDragActive] = useState(false)
   const [localError, setLocalError] = useState<string>()
+  const errorId = 'magnet-input-error'
 
   async function submitMagnet() {
     const parsed = parseMagnetInput(value)
@@ -41,7 +42,7 @@ export function SourceInput({
   }
 
   async function submitFile(file: File | undefined) {
-    if (!file) return
+    if (!file || disabled) return
     setLocalError(undefined)
     await onStartTorrentFile(file)
   }
@@ -49,7 +50,13 @@ export function SourceInput({
   function handleDrop(event: DragEvent<HTMLLabelElement>) {
     event.preventDefault()
     setDragActive(false)
+    if (disabled) return
     void submitFile(event.dataTransfer.files.item(0) ?? undefined)
+  }
+
+  function clearMagnet() {
+    setValue('')
+    setLocalError(undefined)
   }
 
   return (
@@ -70,17 +77,31 @@ export function SourceInput({
           placeholder="magnet:?xt=urn:btih:..."
           disabled={disabled}
           spellCheck={false}
-          onChange={(event) => setValue(event.target.value)}
+          aria-invalid={Boolean(localError)}
+          aria-describedby={localError ? errorId : undefined}
+          onChange={(event) => {
+            setValue(event.target.value)
+            setLocalError(undefined)
+          }}
         />
       </div>
-      {localError ? <p className="field-error">{localError}</p> : null}
+      {localError ? (
+        <p className="field-error" id={errorId} role="alert">
+          {localError}
+        </p>
+      ) : null}
 
       <div className="button-row">
         <button className="button primary" type="button" disabled={disabled} onClick={submitMagnet}>
           <Play size={17} />
           开始解析
         </button>
-        <button className="button secondary" type="button" onClick={() => setValue('')} disabled={!value}>
+        <button
+          className="button secondary"
+          type="button"
+          onClick={clearMagnet}
+          disabled={!value}
+        >
           <RotateCcw size={17} />
           清空
         </button>
@@ -88,9 +109,11 @@ export function SourceInput({
 
       <label
         className={`dropzone ${dragActive ? 'active' : ''}`}
-        data-state={dragActive ? 'active' : 'idle'}
+        data-state={disabled ? 'disabled' : dragActive ? 'active' : 'idle'}
+        aria-disabled={disabled}
         onDragOver={(event) => {
           event.preventDefault()
+          if (disabled) return
           setDragActive(true)
         }}
         onDragLeave={() => setDragActive(false)}
@@ -103,6 +126,7 @@ export function SourceInput({
           type="file"
           accept=".torrent,application/x-bittorrent"
           disabled={disabled}
+          aria-label="选择 .torrent 文件"
           onChange={(event) => void submitFile(event.target.files?.item(0) ?? undefined)}
         />
       </label>
@@ -121,7 +145,10 @@ export function SourceInput({
                 className="recent-item"
                 type="button"
                 key={item.value}
-                onClick={() => setValue(item.value)}
+                onClick={() => {
+                  setValue(item.value)
+                  setLocalError(undefined)
+                }}
               >
                 <FileUp size={14} />
                 <span>{item.label}</span>

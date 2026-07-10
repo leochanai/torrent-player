@@ -1,4 +1,20 @@
+import type { TaskStatus } from '../webtorrent/types'
+
 const BYTE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB']
+
+const TASK_STATUS_LABELS: Record<TaskStatus, string> = {
+  idle: '空闲',
+  validating: '正在校验',
+  'fetching-metadata': '正在获取元数据',
+  ready: '准备就绪',
+  buffering: '正在缓冲',
+  playing: '正在播放',
+  paused: '已暂停',
+  'no-peers': '等待连接节点',
+  unsupported: '当前环境不支持',
+  error: '发生错误',
+  stopped: '已停止',
+}
 
 export function formatBytes(bytes: number): string {
   if (!Number.isFinite(bytes) || bytes <= 0) return '0 B'
@@ -39,4 +55,8 @@ export function formatDuration(seconds: number): string {
   }
 
   return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`
+}
+
+export function formatTaskStatus(status: TaskStatus): string {
+  return TASK_STATUS_LABELS[status]
 }
